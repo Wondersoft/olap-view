@@ -3,7 +3,7 @@
         var name = 'piechart';
         var data = new google.visualization.DataTable();
 
-        <%= filling_table data, properties[:dimension], (properties[:measures] || []) %>
+        <%= olap_view_filling_table data, properties[:dimension], (properties[:measures] || []) %>
 
         var measures_sum = [];
         for (var i = 0; i < data.getNumberOfColumns(); i++) {

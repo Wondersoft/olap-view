@@ -3,7 +3,7 @@
         var name = 'table';
         var data = new google.visualization.DataTable();
 
-        <%= filling_table data, properties[:dimension], (properties[:measures] || []) %>
+        <%= olap_view_filling_table data, properties[:dimension], (properties[:measures] || []) %>
 
         var chart = new google.visualization.Table(document.getElementById('<%= id %>'));
 
@@ -13,11 +13,11 @@
         };
 
         <%= properties[:function] && properties[:function].html_safe %>
-        <%= "total(data);".html_safe if properties[:total] == true %>
 
         chart.draw(data, $.extend(true, default_options, <%= properties[:options] ? "JSON.parse('#{properties[:options].to_json}')".html_safe : '{}' %>));
 
         rowSpan('<%= id %>');
+        <%= "total(data);".html_safe if properties[:total] == true %>
     }
 
     function rowSpan(id){
@@ -64,11 +64,18 @@
             }
         }
         values_sum[0].v = '<%= escape_javascript Olap::View.options[:total].html_safe %>';
-        data.addRow(values_sum);
+//        data.addRow(values_sum); add row to DataTable()
+
+        var html = "<thead><tr>";
+        for (var i = 0; i < values_sum.length; i++){
+            html += "<th class='"+ values_sum[i].p.className +"'>"+ values_sum[i].v +"</th>";
+        }
+        html += "</tr></thead>";
+        $('#<%= id %> table').append(html);
     }
 
     google.load("visualization", "1", {
-        "packages": ["corechart"],
+        "packages": ["table"],
         'language': 'ru',
         "callback" : function(){
             draw<%= id %>();
