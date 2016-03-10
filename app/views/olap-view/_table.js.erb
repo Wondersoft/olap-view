@@ -1,0 +1,76 @@
+(function(){
+    function draw<%= id %>() {
+        var name = 'table';
+        var data = new google.visualization.DataTable();
+
+        <%= filling_table data, properties[:dimension], (properties[:measures] || []) %>
+
+        var chart = new google.visualization.Table(document.getElementById('<%= id %>'));
+
+        var default_options = {
+            allowHtml: true,
+            width: '100%'
+        };
+
+        <%= properties[:function] && properties[:function].html_safe %>
+        <%= "total(data);".html_safe if properties[:total] == true %>
+
+        chart.draw(data, $.extend(true, default_options, <%= properties[:options] ? "JSON.parse('#{properties[:options].to_json}')".html_safe : '{}' %>));
+
+        rowSpan('<%= id %>');
+    }
+
+    function rowSpan(id){
+        var rows = $('#'+ id +' table tbody tr');
+
+        var first_row_dimention = [];
+
+        $.each(rows, function(i, row){
+            dimentions = $(row).find('td.dimension');
+
+            $.each(dimentions, function(j, dimention){
+                var prev_row_dimention = $($(rows[i-1]).find('td.dimension')[j]);
+
+                if ((first_row_dimention[j] == undefined) || ($(dimention).html() != first_row_dimention[j].html())) {
+                    first_row_dimention[j] = $(dimention);
+                    prev_row_dimention.css({
+                        'border-bottom-style': 'solid'});
+                    $(dimention).css({'border-bottom-style': 'none'});
+                } else {
+                    $(dimention).html('');
+                    $(dimention).css({
+                        backgroundColor: first_row_dimention[j].css('background-color'),
+                        'border-top-style': 'none',
+                        'border-bottom-style': 'none'
+                    });
+                }
+            });
+        });
+
+        rows.last().find("td.dimension").css({'border-bottom-style': 'solid'});
+    }
+
+    function total(data){
+        var values_sum = [];
+        for (var i = 0; i < data.getNumberOfColumns(); i++) {
+            if (data.getColumnProperties(i).type == "measure") {
+                var sum = 0;
+                for (var j = 0; j < data.getNumberOfRows(); j++) {
+                    sum += data.getValue(j, i);
+                }
+                values_sum[values_sum.length] = {v: parseFloat(sum.toFixed(2)), p: {className: "google-visualization-table-td measure total"}};
+            } else {
+                values_sum[values_sum.length] = {v: '', p: {className: "google-visualization-table-td dimension total"}};
+            }
+        }
+        values_sum[0].v = '<%= escape_javascript Olap::View.options[:total].html_safe %>';
+        data.addRow(values_sum);
+    }
+
+    google.load("visualization", "1", {
+        "packages": ["corechart"],
+        'language': 'ru',
+        "callback" : function(){
+            draw<%= id %>();
+        }});
+}());

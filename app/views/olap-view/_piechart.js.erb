@@ -1,0 +1,42 @@
+(function(){
+    function draw<%= id %>() {
+        var name = 'piechart';
+        var data = new google.visualization.DataTable();
+
+        <%= filling_table data, properties[:dimension], (properties[:measures] || []) %>
+
+        var measures_sum = [];
+        for (var i = 0; i < data.getNumberOfColumns(); i++) {
+            if (data.getColumnProperties(i).type == "measure") {
+                var sum = 0;
+                for (var j = 0; j < data.getNumberOfRows(); j++) {
+                    sum += data.getValue(j, i);
+                }
+                measures_sum[measures_sum.length] = sum;
+            }
+        }
+
+        if (measures_sum[0] > 0) {
+            var chart = new google.visualization.PieChart(document.getElementById('<%= id %>'));
+
+            var default_options = {
+                allowHtml: true,
+                is3D: true,
+                chartArea: {left:0,top:20,width:'100%', height:'70%'}
+            };
+
+            <%= properties[:function] && properties[:function].html_safe %>
+
+            chart.draw(data, $.extend(true, default_options, <%= properties[:options] ? "JSON.parse('#{properties[:options].to_json}')".html_safe : '{}' %>));
+        } else {
+            $("div#<%= id %>").html('');
+        }
+    }
+
+    google.load("visualization", "1", {
+        "packages": ["corechart"],
+        'language': 'ru',
+        "callback" : function(){
+            draw<%= id %>();
+        }});
+}());
