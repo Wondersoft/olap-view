@@ -35,13 +35,13 @@
     def olap_view_filling_table data, dimension = nil, measures = []
       html = ''
       data.dimensions_caption(dimension).each do |d|
-        html += "data.addColumn({type: 'string', label: '#{escape_javascript d[:caption]}', id: '#{escape_javascript d[:name]}', p:{'type': 'dimension'}});"
+        html += "data.addColumn({type: 'string', label: '#{escape_javascript d[:caption]}', id: '#{escape_javascript d[:name]}', p:{'type': 'dimension'}});\n"
       end
       data.measures_caption(measures).each do |m|
-        html += "data.addColumn({type: 'number', label: '#{escape_javascript m[:caption]}', id: '#{escape_javascript m[:name]}', p:{'type': 'measure'}});"
+        html += "data.addColumn({type: 'number', label: '#{escape_javascript m[:caption]}', id: '#{escape_javascript m[:name]}', p:{'type': 'measure'}});\n"
       end
       data.table(dimension, measures).each do |row|
-        html += "data.addRow([#{olap_view_render_row row}]);"
+        html += "data.addRow([#{olap_view_render_row row}]);\n"
       end
       html.html_safe
     end

@@ -16,7 +16,7 @@
 
         chart.draw(data, $.extend(true, default_options, <%= properties[:options] ? "JSON.parse('#{properties[:options].to_json}')".html_safe : '{}' %>));
 
-        rowSpan('<%= id %>');
+        <%= "rowSpan('#{id}');".html_safe if properties[:rowspan] == true %>
         <%= "total(data);".html_safe if properties[:total] == true %>
     }
 
