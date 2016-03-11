@@ -13,6 +13,16 @@ module Olap
         total: "Total"
     }
 
+    # Configure the default options to connect to XMLA server
+    # Can be optionally used to setup connection options in one place in application,
+    #
+    # Example:
+    #   >> Olap::View.default_options = {no_data: 'Text for no data', undefined: 'Undefined element name', total: 'Total title'}
+    #   >> Olap::View.request mdx
+    #   => #<Olap::View::Parse:0x007ffa2b9f60f0 @response=#<Olap::Xmla::Response:0x007ffa2b9f6118 @response={4 ...
+    #
+    #
+    #
     def self.default_options= options = {}
       @@view_options.merge(options)
     end

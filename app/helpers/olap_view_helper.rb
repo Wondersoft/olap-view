@@ -1,5 +1,13 @@
   module OlapViewHelper
 
+    # Initialize Goole Charts API
+    # Paste it into <head> to your layout
+    #
+    # <head>
+    # ...
+    # <%= olap_view_charts_init %>
+    # </head>
+    #
     def olap_view_charts_init
       javascript_include_tag 'https://www.google.com/jsapi'
     end

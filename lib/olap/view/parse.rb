@@ -6,6 +6,7 @@ class Olap::View::Parse
     @response = response
   end
 
+  # Aggregate result by one of the dimensions and return only listed measures
   def aggregate dimension, measures = []
     result = []
     index = {}
@@ -32,7 +33,11 @@ class Olap::View::Parse
     }
     result
   end
-
+  # Return collection of dimensions or selected dimension by name
+  #
+  # *  +:name+  the name of dimension
+  # *  +:caption+ display name of dimension
+  #
   def dimensions_caption dimension = nil
     dimension.nil? ? response.dimensions :
         response.dimensions.collect{|d|
@@ -41,6 +46,11 @@ class Olap::View::Parse
         }.compact
   end
 
+  # Return collection of measures or selected measures by name
+  #
+  # *  +:name+  the name of measure
+  # *  +:caption+ display name of measure
+  #
   def measures_caption measures = []
     (measures.nil? || measures.empty?) ? response.measures :
         response.measures.collect{|m|
@@ -49,6 +59,10 @@ class Olap::View::Parse
         }.compact
   end
 
+  # Collection of result rows and aggregate collection by dimension and measures
+  #      type - dimension or measure
+  #      value - metric value
+  #      fmt_value - formatted metric value
   def table dimension = nil, measures = []
     (dimension ? aggregate(dimension, measures) : response.rows).collect{|row|
       row[:labels].collect{|label| {type: 'dimension', value: label[:value].to_s, fmt_value: label[:fmt_value]}} +
