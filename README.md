@@ -87,11 +87,17 @@ In `olap_view_chart_by_mdx` and `olap_view_chart_by_xmla` following properties a
 ```
 
 `total: true` show total string in table chart
+
 `rowspan: true` unites the cells with the same data from the dimenssions in table chart
+
 `function: "text on JS"` execute ani js code into chart template
-`dimention: "Source Name"` aggregate xmla data by dimesion 
-`measures: "[Measures].[Click]"` remove measure from xmla data 
+
+`dimention: "Source Name"` aggregate xmla data by dimesion
+ 
+`measures: "[Measures].[Click]"` remove measure from xmla data
+ 
 `options: {}` Google Charts draw options
+
 
 
 
