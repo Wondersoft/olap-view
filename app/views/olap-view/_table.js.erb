@@ -63,8 +63,7 @@
                 values_sum[values_sum.length] = {v: '', p: {className: "google-visualization-table-td dimension total"}};
             }
         }
-        values_sum[0].v = '<%= escape_javascript Olap::View.options[:total].html_safe %>';
-//        data.addRow(values_sum); add row to DataTable()
+        values_sum[0].v = '<%= escape_javascript olap_view_i18n_options[:total] %>';
 
         var html = "<thead><tr>";
         for (var i = 0; i < values_sum.length; i++){

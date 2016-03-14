@@ -7,28 +7,26 @@ require "olap/view/parse"
 module Olap
   module View
 
-    @@view_options = {
+    @@default_view_options = {
         no_data: "Not enough data to display",
         undefined: "-",
         total: "Total"
     }
 
-    # Configure the default options to connect to XMLA server
-    # Can be optionally used to setup connection options in one place in application,
+    # Configure the default view options
+    # Can be optionally used to setup options in one place in application,
     #
     # Example:
-    #   >> Olap::View.default_options = {no_data: 'Text for no data', undefined: 'Undefined element name', total: 'Total title'}
+    #   >> Olap::View.default_view_options = {no_data: 'Text for no data', undefined: 'Undefined element name', total: 'Total title'}
     #   >> Olap::View.request mdx
     #   => #<Olap::View::Parse:0x007ffa2b9f60f0 @response=#<Olap::Xmla::Response:0x007ffa2b9f6118 @response={4 ...
     #
-    #
-    #
-    def self.default_options= options = {}
-      @@view_options.merge(options)
+    def self.default_view_options= options = {}
+      @@default_view_options.merge!(options)
     end
 
-    def self.options
-      @@view_options
+    def self.view_options
+      @@default_view_options
     end
 
     def self.request mdx, args = {}

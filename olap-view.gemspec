@@ -8,7 +8,7 @@ Gem::Specification.new do |spec|
   spec.authors       = ["stepanovit"]
   spec.email         = ["stepanov@wondersoft.ru"]
   spec.summary       = %q{OLAP VIEW gem}
-  spec.description   = %q{RubyOnRails gem to visualize by Google Charts MDX queries on OLAP databases using XMLA connection. Can be used with any XMLA-compliant server, like Olaper or Mondrian.}
+  spec.description   = %q{Ruby On Rails gem to visualize by Google Charts MDX queries on OLAP databases using XMLA connection. Can be used with any XMLA-compliant server, like Olaper or Mondrian.}
   spec.homepage      = "https://github.com/Wondersoft/olap-view"
   spec.license       = "MIT"
 

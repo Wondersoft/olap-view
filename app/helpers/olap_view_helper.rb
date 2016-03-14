@@ -25,7 +25,7 @@
         html += javascript_tag(render partial: "olap-view/#{chart}.js",
                                       locals: {id: id, data: xmla, properties: properties})
       else
-        html = "<div id='#{id}'>#{Olap::View.options[:no_data]}</div>"
+        html = "<div id='#{id}'>#{olap_view_i18n_options[:no_data]}</div>"
       end
       html.html_safe
     end
@@ -33,7 +33,7 @@
     def olap_view_render_row row
       row.collect{|r|
         if r[:type] == 'dimension'
-          "{v: '#{escape_javascript(r[:value] && !r[:value].empty? ? r[:value] : olap_view_unknown_element)}', p:{className: 'google-visualization-table-td #{r[:type]}'}}"
+          "{v: '#{escape_javascript(r[:value] && !r[:value].empty? ? r[:value] : olap_view_i18n_options[:undefined])}', p:{className: 'google-visualization-table-td #{r[:type]}'}}"
         else
           "{v: #{r[:value]}, f: '#{r[:fmt_value] || r[:value]}', p:{className: 'google-visualization-table-td #{r[:type]}'}}"
         end
@@ -54,12 +54,15 @@
       html.html_safe
     end
 
-    private
     def olap_view_random_id
       (0...8).map { ('a'..'z').to_a[rand(26)] }.join
     end
 
     def olap_view_unknown_element
-      Olap::View.options[:undefined].html_safe
+      olap_view_i18n_options[:undefined].html_safe
+    end
+
+    def olap_view_i18n_options
+      Hash[Olap::View.view_options.collect{|k, v| [k, I18n.t("olap.view.#{k}", default: v).html_safe]}]
     end
   end
