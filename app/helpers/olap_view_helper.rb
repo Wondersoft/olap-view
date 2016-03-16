@@ -33,9 +33,9 @@
     def olap_view_render_row row
       row.collect{|r|
         if r[:type] == 'dimension'
-          "{v: '#{escape_javascript(r[:value] && !r[:value].empty? ? r[:value] : olap_view_i18n_options[:undefined])}', p:{className: 'google-visualization-table-td #{r[:type]}'}}"
+          "{v: '#{escape_javascript(r[:value] && !r[:value].empty? ? r[:value] : olap_view_i18n_options[:undefined])}', p:{'type': '#{r[:type]}', className: 'google-visualization-table-td #{r[:type]}'}}"
         else
-          "{v: #{r[:value]}, f: '#{r[:fmt_value] || r[:value]}', p:{className: 'google-visualization-table-td #{r[:type]}'}}"
+          "{v: #{r[:value]}, f: '#{r[:fmt_value] || r[:value]}', p:{'type': '#{r[:type]}', className: 'google-visualization-table-td #{r[:type]}'}}"
         end
       }.join(',').html_safe
     end

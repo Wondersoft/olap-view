@@ -18,6 +18,13 @@
 
         <%= "rowSpan('#{id}');".html_safe if properties[:rowspan] == true %>
         <%= "total(data);".html_safe if properties[:total] == true %>
+        addClassToTh(data);
+    }
+
+    function addClassToTh(data){
+        $('#<%= id %> table th').each(function(i, element){
+            $(this).addClass(data.getColumnProperties(i).type);
+        });
     }
 
     function rowSpan(id){

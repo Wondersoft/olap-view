@@ -1,9 +1,11 @@
 .google-visualization-table {
-  .dimension{
-    text-align: left;
-  }
-  .measure{
-    text-align: right;
+  .google-visualization-table-td{
+    &.dimension{
+      text-align: left;
+    }
+    &.measure{
+      text-align: right;
+    }
   }
   .total{
     background: #e4e9f4;
