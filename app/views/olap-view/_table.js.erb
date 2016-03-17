@@ -30,31 +30,37 @@
     function rowSpan(id){
         var rows = $('#'+ id +' table tbody tr');
 
-        var first_row_dimention = [];
-
+        var dimensions_prev;
         $.each(rows, function(i, row){
-            dimentions = $(row).find('td.dimension');
+            var dimensions = $(row).find('td.dimension');
+            var can_update = true;
+            $.each(dimensions, function(j, dimension){
+                var dimension = $(dimension);
 
-            $.each(dimentions, function(j, dimention){
-                var prev_row_dimention = $($(rows[i-1]).find('td.dimension')[j]);
-
-                if ((first_row_dimention[j] == undefined) || ($(dimention).html() != first_row_dimention[j].html())) {
-                    first_row_dimention[j] = $(dimention);
-                    prev_row_dimention.css({
-                        'border-bottom-style': 'solid'});
-                    $(dimention).css({'border-bottom-style': 'none'});
+                if (dimensions_prev != undefined){
+                    if (dimension.html() != $(dimensions_prev[j]).html()){
+                        can_update = false;
+                    }
+                    if(can_update){
+                        dimension.addClass('delete_cell');
+                        dimension.css({
+                            color: 'transparent',
+                            backgroundColor: $(dimensions_prev[j]).css('background-color'),
+                            'border-top-style': 'none',
+                            'border-bottom-style': 'none'
+                        });
+                    } else {
+                        $(dimensions_prev[j]).css({'border-bottom-style': 'solid'});
+                        $(dimension).css({'border-bottom-style': 'none'});
+                    }
                 } else {
-                    $(dimention).html('');
-                    $(dimention).css({
-                        backgroundColor: first_row_dimention[j].css('background-color'),
-                        'border-top-style': 'none',
-                        'border-bottom-style': 'none'
-                    });
+                    dimension.css({'border-bottom-style': 'none'});
                 }
             });
+            dimensions_prev = dimensions;
         });
-
         rows.last().find("td.dimension").css({'border-bottom-style': 'solid'});
+        rows.find('.delete_cell').html('');
     }
 
     function total(data){
