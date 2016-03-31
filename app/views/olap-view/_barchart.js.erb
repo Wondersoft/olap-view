@@ -1,0 +1,51 @@
+(function(){
+    function draw<%= id %>() {
+        var name = 'barchart';
+        var data = new google.visualization.DataTable();
+
+        <%= olap_view_filling_table data, properties[:dimension], (properties[:measures] || []), properties[:merge_dimensions] %>
+
+        var measures_sum = [];
+        for (var i = 0; i < data.getNumberOfColumns(); i++) {
+            if (data.getColumnProperties(i).type == "measure") {
+                var sum = 0;
+                for (var j = 0; j < data.getNumberOfRows(); j++) {
+                    sum += data.getValue(j, i);
+                }
+                measures_sum[measures_sum.length] = sum;
+            }
+        }
+
+        if (measures_sum[0] > 0) {
+            var chart = new google.visualization.BarChart(document.getElementById('<%= id %>'));
+
+            var title_indexes = [];
+            for (var i = 0; i < data.getNumberOfColumns(); i++) {
+                if (data.getColumnProperties(i).type == "measure") {
+                    title_indexes.push(i);
+                }
+            }
+
+            var default_options = {
+                allowHtml: true,
+                height: 370,
+                animation: {duration: 200, startup: true },
+                orientation: 'horizontal',
+                title: data.getColumnLabel(title_indexes[0])
+            };
+
+            <%= properties[:function] && properties[:function].html_safe %>
+
+            chart.draw(data, $.extend(true, default_options, <%= properties[:options] ? "JSON.parse('#{properties[:options].to_json}')".html_safe : '{}' %>));
+        } else {
+            $("div#<%= id %>").html('');
+        }
+    }
+
+    google.load("visualization", "1", {
+        "packages": ["corechart"],
+        'language': 'ru',
+        "callback" : function(){
+            draw<%= id %>();
+        }});
+}());
