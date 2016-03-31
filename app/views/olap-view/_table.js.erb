@@ -3,7 +3,7 @@
         var name = 'table';
         var data = new google.visualization.DataTable();
 
-        <%= olap_view_filling_table data, properties[:dimension], (properties[:measures] || []) %>
+        <%= olap_view_filling_table data, properties[:dimension], (properties[:measures] || []), properties[:merge_dimensions] %>
 
         var chart = new google.visualization.Table(document.getElementById('<%= id %>'));
 

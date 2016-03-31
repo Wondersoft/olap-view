@@ -3,7 +3,7 @@
         var name = 'combochart';
         var data = new google.visualization.DataTable();
 
-        <%= olap_view_filling_table data, properties[:dimension], (properties[:measures] || []) %>
+        <%= olap_view_filling_table data, properties[:dimension], (properties[:measures] || []), properties[:merge_dimensions] %>
 
         var measures_sum = [];
         for (var i = 0; i < data.getNumberOfColumns(); i++) {

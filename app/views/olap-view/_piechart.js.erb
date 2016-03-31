@@ -3,7 +3,7 @@
         var name = 'piechart';
         var data = new google.visualization.DataTable();
 
-        <%= olap_view_filling_table data, properties[:dimension], (properties[:measures] || []) %>
+        <%= olap_view_filling_table data, properties[:dimension], (properties[:measures] || []), properties[:merge_dimensions] %>
 
         var measures_sum = [];
         for (var i = 0; i < data.getNumberOfColumns(); i++) {
@@ -19,10 +19,18 @@
         if (measures_sum[0] > 0) {
             var chart = new google.visualization.PieChart(document.getElementById('<%= id %>'));
 
+            var title_indexes = [];
+            for (var i = 0; i < data.getNumberOfColumns(); i++) {
+                if (data.getColumnProperties(i).type == "measure") {
+                    title_indexes.push(i);
+                }
+            }
+
             var default_options = {
                 allowHtml: true,
                 is3D: true,
-                chartArea: {left:0,top:20,width:'100%', height:'70%'}
+                chartArea: {left:0,top:20,width:'100%', height:'70%'},
+                title: data.getColumnLabel(title_indexes[0])
             };
 
             <%= properties[:function] && properties[:function].html_safe %>

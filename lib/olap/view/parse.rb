@@ -13,7 +13,7 @@ class Olap::View::Parse
     response.rows.each{|row|
       label = row[:labels].detect{|label| label[:name] == dimension}
       values = row[:values].collect{|v|
-        next unless measures.include? v[:measure]
+        next if !measures.empty? && !measures.include?(v[:measure])
         v.delete :fmt_value
         v
       }.compact
@@ -33,6 +33,7 @@ class Olap::View::Parse
     }
     result
   end
+
   # Return collection of dimensions or selected dimension by name
   #
   # *  +:name+  the name of dimension
@@ -59,14 +60,36 @@ class Olap::View::Parse
         }.compact
   end
 
+  def dimensions_row row, merge_dimensions = false
+    if merge_dimensions
+      label_value = row.collect{|label|
+        next if label[:value].to_s.empty?
+        label[:value].to_s
+      }.compact.join(', ')
+      label_fmt_value = row.collect{|label|
+        next if label[:fmt_value].to_s.empty?
+        label[:fmt_value]
+      }.compact.join(', ')
+      [{type: 'dimension', value: label_value.to_s, fmt_value: label_fmt_value.to_s}]
+    else
+      row.collect{|label| {type: 'dimension', value: label[:value].to_s, fmt_value: label[:fmt_value]}}
+    end
+  end
+
+  def measures_row row, measures = []
+    row.collect{|value|
+      next if !measures.empty? && !measures.include?(value[:measure])
+      {type: 'measure', value: value[:value].to_f, fmt_value: value[:fmt_value]}
+    }.compact
+  end
+
   # Collection of result rows and aggregate collection by dimension and measures
   #      type - dimension or measure
   #      value - metric value
   #      fmt_value - formatted metric value
-  def table dimension = nil, measures = []
-    (dimension ? aggregate(dimension, measures) : response.rows).collect{|row|
-      row[:labels].collect{|label| {type: 'dimension', value: label[:value].to_s, fmt_value: label[:fmt_value]}} +
-          row[:values].collect{|value| {type: 'measure', value: value[:value].to_f, fmt_value: value[:fmt_value]}}
+  def table dimension = nil, measures = [], merge_dimensions = false
+    (dimension && !measures.empty? ? aggregate(dimension, measures) : response.rows).collect{|row|
+      dimensions_row(row[:labels], merge_dimensions) + measures_row(row[:values], measures)
     }
   end
 

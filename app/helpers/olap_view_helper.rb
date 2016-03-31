@@ -40,15 +40,21 @@
       }.join(',').html_safe
     end
 
-    def olap_view_filling_table data, dimension = nil, measures = []
+    def olap_view_filling_table data, dimension = nil, measures = [], merge_dimension = false
       html = ''
-      data.dimensions_caption(dimension).each do |d|
-        html += "data.addColumn({type: 'string', label: '#{escape_javascript d[:caption]}', id: '#{escape_javascript d[:name]}', p:{'type': 'dimension'}});\n"
+
+      if merge_dimension
+        d_caption = data.dimensions_caption(dimension).collect{|d| d[:caption]}.join(', ')
+        html += "data.addColumn({type: 'string', label: '#{escape_javascript d_caption}', id: 'merge_dimension', p:{'type': 'dimension'}});\n"
+      else
+        data.dimensions_caption(dimension).each do |d|
+          html += "data.addColumn({type: 'string', label: '#{escape_javascript d[:caption]}', id: '#{escape_javascript d[:name]}', p:{'type': 'dimension'}});\n"
+        end
       end
       data.measures_caption(measures).each do |m|
         html += "data.addColumn({type: 'number', label: '#{escape_javascript m[:caption]}', id: '#{escape_javascript m[:name]}', p:{'type': 'measure'}});\n"
       end
-      data.table(dimension, measures).each do |row|
+      data.table(dimension, measures, merge_dimension).each do |row|
         html += "data.addRow([#{olap_view_render_row row}]);\n"
       end
       html.html_safe
