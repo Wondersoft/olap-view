@@ -12,5 +12,8 @@
   }
   .google-visualization-table-th {
     white-space: normal;
+    &.measure{
+      text-align: right !important;
+    }
   }
 }
