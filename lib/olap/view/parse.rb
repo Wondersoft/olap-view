@@ -12,7 +12,8 @@ class Olap::View::Parse
     index = {}
     response.rows.each{|row|
       label = row[:labels].detect{|label| label[:name] == dimension}
-      values = measures_row(row, measures).collect{|v|
+      values = row[:values].collect{|v|
+        next unless measures.include? v[:measure]
         v.delete :fmt_value
         v
       }.compact
