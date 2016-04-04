@@ -12,8 +12,7 @@ class Olap::View::Parse
     index = {}
     response.rows.each{|row|
       label = row[:labels].detect{|label| label[:name] == dimension}
-      values = row[:values].collect{|v|
-        next if !measures.empty? && !measures.include?(v[:measure])
+      values = measures_row(row, measures).collect{|v|
         v.delete :fmt_value
         v
       }.compact
@@ -53,11 +52,15 @@ class Olap::View::Parse
   # *  +:caption+ display name of measure
   #
   def measures_caption measures = []
-    (measures.nil? || measures.empty?) ? response.measures :
-        response.measures.collect{|m|
-          next unless measures.include? m[:name]
-          m
-        }.compact
+    if measures.empty? || measures.nil?
+      response.measures
+    else
+      measures.collect{|measure|
+        next unless col = response.measures.detect{|value| value[:name] == measure}
+        col
+      }.compact
+    end
+
   end
 
   def dimensions_row row, merge_dimensions = false
@@ -77,10 +80,16 @@ class Olap::View::Parse
   end
 
   def measures_row row, measures = []
-    row.collect{|value|
-      next if !measures.empty? && !measures.include?(value[:measure])
-      {type: 'measure', value: value[:value].to_f, fmt_value: value[:fmt_value]}
-    }.compact
+    if measures.empty?
+      row.collect{|value|
+        {type: 'measure', value: value[:value].to_f, fmt_value: value[:fmt_value]}
+      }.compact
+    else
+      measures.collect{|measure|
+        next unless col = row.detect{|value| value[:measure] == measure}
+        {type: 'measure', value: col[:value].to_f, fmt_value: col[:fmt_value]}
+      }.compact
+    end
   end
 
   # Collection of result rows and aggregate collection by dimension and measures
