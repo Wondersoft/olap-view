@@ -55,7 +55,7 @@ Olap::View.request MDX_QUERY, {'%DATE%' => '20150530'}
 ```
 
 ### Render Google Chart by MDX
-At the moment only available `:table` and `:piechart` charts.
+At the moment only available `:table`, `:piechart`, `:barchart` and partially `:combochart` charts.
 
 Insert helper menthod to `erb` file: 
 ```ruby
@@ -92,9 +92,11 @@ In `olap_view_chart_by_mdx` and `olap_view_chart_by_xmla` following properties a
 
 `function: "text on JS"` execute ani js code into chart template
 
-`dimention: "Source Name"` aggregate xmla data by dimesion
+`dimension: "Source Name"` aggregate xmla data by dimesion
+
+`merge_dimensions: true` merge dimensions to one table
  
-`measures: "[Measures].[Click]"` remove measure from xmla data
+`measures: "[Measures].[Click]"` show only selected measure from xmla data and sort by order
  
 `options: {}` Google Charts draw options
 
