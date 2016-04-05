@@ -5,18 +5,7 @@
 
         <%= olap_view_filling_table data, properties[:dimension], (properties[:measures] || []), properties[:merge_dimensions] %>
 
-        var measures_sum = [];
-        for (var i = 0; i < data.getNumberOfColumns(); i++) {
-            if (data.getColumnProperties(i).type == "measure") {
-                var sum = 0;
-                for (var j = 0; j < data.getNumberOfRows(); j++) {
-                    sum += data.getValue(j, i);
-                }
-                measures_sum[measures_sum.length] = sum;
-            }
-        }
-
-        if (measures_sum[0] > 0) {
+        if (data.getNumberOfRows() != 0) {
             var chart = new google.visualization.BarChart(document.getElementById('<%= id %>'));
 
             var title_indexes = [];
