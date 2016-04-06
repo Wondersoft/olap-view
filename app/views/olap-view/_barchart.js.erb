@@ -19,7 +19,10 @@
                 allowHtml: true,
                 height: 370,
                 animation: {duration: 200, startup: true },
-                orientation: 'horizontal'
+                orientation: 'horizontal',
+                vAxis: {
+                    minValue: 0
+                }
             };
 
             <%= properties[:function] && properties[:function].html_safe %>

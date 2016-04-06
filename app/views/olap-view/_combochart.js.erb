@@ -21,7 +21,10 @@
             var default_options = {
                 allowHtml: true,
                 height: 370,
-                animation: {duration: 200, startup: true }
+                animation: {duration: 200, startup: true },
+                vAxis: {
+                    minValue: 0
+                }
             };
 
             <%= properties[:function] && properties[:function].html_safe %>
