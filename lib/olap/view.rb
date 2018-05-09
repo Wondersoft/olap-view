@@ -30,8 +30,22 @@ module Olap
     end
 
     def self.request mdx, args = {}
-      response = Olap::Xmla.client.request(mdx, args)
-      Olap::View::Parse.new response
+      begin
+        response = Olap::Xmla.client.request(mdx, args)
+        Olap::View::Parse.new response
+      rescue Exception => error
+        return Err.new
+      end
+    end
+
+    class Err
+      def response
+        Err.new
+      end
+
+      def rows
+        []
+      end
     end
   end
 end
